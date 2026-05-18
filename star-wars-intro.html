@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Star Wars Intro</title>
+  <link rel="stylesheet" href="star-wars-intro.css" />
+  <link href="https://fonts.cdnfonts.com/css/star-wars" rel="stylesheet" />
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<!-- Click to begin -->
+<div id="prompt">
+  <div class="star-icon">✦</div>
+  <div class="prompt-actions">
+    <button id="btn-edit">✏ Edit</button>
+    <button id="btn-play">▶ Play</button>
+  </div>
+</div>
+
+<!-- Content editor -->
+<div id="editor" class="hidden">
+  <div id="editor-card">
+    <h2>Edit Intro</h2>
+    <form id="editor-form">
+      <label>Pre-title text<textarea name="preTitle" rows="2"></textarea></label>
+      <label>Logo title<input name="title" type="text" /></label>
+      <label>Episode<input name="subtitle" type="text" /></label>
+      <label>Crawl heading<input name="crawlTitle" type="text" /></label>
+      <label>Crawl body<textarea name="crawlBody" rows="7"></textarea></label>
+      <div class="editor-buttons">
+        <button type="button" id="btn-cancel">Cancel</button>
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Main scene -->
+<div id="scene">
+
+  <!-- "A long time ago…" -->
+  <div id="pre-title">
+    <p id="pre-title-text"></p>
+  </div>
+
+  <!-- Logo -->
+  <div id="logo-wrap">
+    <div id="logo">STAR WARS</div>
+  </div>
+
+  <!-- Crawl -->
+  <div id="crawl-stage">
+    <div id="crawl-plane">
+      <div class="crawl-inner">
+        <div class="crawl-subtitle" id="crawl-subtitle"></div>
+        <div class="crawl-title"   id="crawl-heading"></div>
+        <div class="crawl-body"    id="crawl-body"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Final overlay -->
+<div id="the-end"><p>May the Force be with you.</p></div>
+
+<script src="star-wars-intro.js"></script>
+</body>
+</html>

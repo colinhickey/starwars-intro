@@ -1,0 +1,330 @@
+@import url('https://fonts.googleapis.com/css2?family=News+Cycle:wght@400;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #FFE81F;
+  --blue-green: #4ce8d4;
+  --space: #000005;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--space);
+  overflow: hidden;
+  font-family: 'News Cycle', Arial, sans-serif;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ── STARS ── */
+#stars-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ── CLICK PROMPT ── */
+#prompt {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  transition: opacity 0.8s ease;
+}
+#prompt.hidden { opacity: 0; pointer-events: none; }
+
+#prompt .star-icon {
+  font-size: 3rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.prompt-actions {
+  display: flex;
+  gap: 1.5rem;
+}
+.prompt-actions button {
+  background: none;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: inherit;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.6rem;
+  cursor: pointer;
+  animation: pulse 2s ease-in-out infinite;
+}
+.prompt-actions button:hover {
+  background: rgba(255,232,31,0.08);
+}
+
+/* ── EDITOR ── */
+#editor {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,5,0.92);
+}
+#editor.hidden { display: none; }
+
+#editor-card {
+  width: min(560px, 90vw);
+  border: 1px solid rgba(255,232,31,0.5);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+#editor-card h2 {
+  color: var(--gold);
+  font-size: 0.85rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 0.25rem;
+  opacity: 0.8;
+}
+
+#editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+#editor-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  color: var(--gold);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+#editor-form input,
+#editor-form textarea {
+  background: #00000f;
+  border: 1px solid rgba(255,232,31,0.25);
+  color: var(--gold);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.45rem 0.65rem;
+  resize: vertical;
+  outline: none;
+  opacity: 1;
+}
+
+#editor-form input:focus,
+#editor-form textarea:focus {
+  border-color: var(--gold);
+}
+
+.editor-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.editor-buttons button {
+  background: none;
+  border: 1px solid rgba(255,232,31,0.5);
+  color: var(--gold);
+  font-family: inherit;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+}
+
+.editor-buttons button[type="submit"] {
+  background: var(--gold);
+  color: var(--space);
+  border-color: var(--gold);
+}
+
+.editor-buttons button:hover { opacity: 0.75; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ── SCENE WRAPPER ── */
+#scene {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#scene.active { display: flex; }
+
+/* ── PRE-TITLE ("A long time ago…") ── */
+#pre-title {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+}
+#pre-title p {
+  color: var(--blue-green);
+  font-size: clamp(1rem, 2.2vw, 1.6rem);
+  text-align: center;
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+  white-space: pre-line;
+  max-width: 640px;
+  padding: 0 2rem;
+}
+#pre-title.fade-in  { animation: preFadeIn  1.6s ease forwards; }
+#pre-title.fade-out { animation: preFadeOut 1.2s ease forwards; }
+
+@keyframes preFadeIn  { from { opacity: 0 } to { opacity: 1 } }
+@keyframes preFadeOut { from { opacity: 1 } to { opacity: 0 } }
+
+/* ── LOGO ── */
+#logo-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+}
+#logo {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--gold);
+  font-family: 'Star Wars', sans-serif;
+  font-size: clamp(4rem, 15vw, 11rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  line-height: 1;
+  filter: drop-shadow(0 0 18px rgba(255,232,31,0.6));
+}
+#logo-wrap.pop    { animation: logoPop    0.9s cubic-bezier(0.22,1,0.36,1) forwards; }
+#logo-wrap.shrink { animation: logoShrink 4s ease-in forwards; }
+
+@keyframes logoPop {
+  from { opacity: 0; transform: scale(2.4); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes logoShrink {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.05); }
+}
+
+/* ── CRAWL STAGE ── */
+#crawl-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  perspective: 350px;
+  perspective-origin: 50% 15%;
+}
+#crawl-stage.visible { opacity: 1; }
+
+/* the tilted plane */
+#crawl-plane {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 88vw;
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) rotateX(32deg) translateY(100%);
+  padding-bottom: 40vh;
+}
+
+#crawl-plane.rolling {
+  animation: crawlRoll var(--crawl-duration, 90s) linear forwards;
+}
+
+@keyframes crawlRoll {
+  from { transform: translateX(-50%) rotateX(32deg) translateY(100%); }
+  to   { transform: translateX(-50%) rotateX(32deg) translateY(var(--crawl-end, -3500px)); }
+}
+
+.crawl-inner {
+  color: var(--gold);
+  font-family: Arial, sans-serif;
+  text-align: justify;
+  padding: 0 1rem;
+}
+
+.crawl-subtitle {
+  text-align: center;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 0.6em;
+  opacity: 0.85;
+}
+
+.crawl-title {
+  text-align: center;
+  font-size: clamp(1.6rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.4em;
+  line-height: 1.15;
+}
+
+.crawl-body {
+  font-size: clamp(2rem, 4vw, 6rem);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+/* fade vignette at top so text disappears nicely */
+#crawl-stage::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 35%;
+  background: linear-gradient(to bottom, var(--space) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── THE END overlay ── */
+#the-end {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 3s ease;
+}
+#the-end.visible { opacity: 1; }
+#the-end p {
+  color: var(--gold);
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
