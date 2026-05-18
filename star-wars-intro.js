@@ -74,6 +74,7 @@ async function runIntro(content) {
   document.getElementById('crawl-body').textContent     = content.crawlBody  || '';
 
   // PHASE 1 – hide prompt, show scene
+  document.body.classList.add('playing');
   prompt.classList.add('hidden');
   await delay(900);
   scene.classList.add('active');
@@ -102,9 +103,10 @@ async function runIntro(content) {
   // Measure actual rendered height now that the scene is live, then derive
   // a duration so the animation ends exactly when the last line leaves screen.
   crawlStage.classList.add('visible');
-  const scrollPx = crawlPlane.scrollHeight + window.innerHeight;
-  crawlPlane.style.setProperty('--crawl-end', `-${scrollPx}px`);
-  const crawlDuration = Math.max(15, Math.round(scrollPx / 25));
+  const planeHeight = crawlPlane.offsetHeight;
+  const totalTravel = planeHeight + window.innerHeight;
+  crawlPlane.style.setProperty('--crawl-end', `-${window.innerHeight}px`);
+  const crawlDuration = Math.max(15, Math.round(totalTravel / 25));
   crawlPlane.style.setProperty('--crawl-duration', crawlDuration + 's');
   void crawlPlane.offsetWidth;
   crawlPlane.classList.add('rolling');
@@ -121,6 +123,7 @@ async function runIntro(content) {
   preTitle.classList.remove('fade-in', 'fade-out');
   crawlStage.classList.remove('visible');
   crawlPlane.classList.remove('rolling');
+  document.body.classList.remove('playing');
   prompt.classList.remove('hidden');
 }
 
