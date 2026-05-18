@@ -43,6 +43,21 @@ const FALLBACK = {
 };
 
 async function loadContent() {
+  // URL params take priority (shared links). Consume once: save to localStorage
+  // and clean the URL so reloads after the crawl use localStorage instead.
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('body') || params.has('title') || params.has('heading')) {
+    const content = {
+      preTitle:   params.get('pre')     || FALLBACK.preTitle,
+      title:      params.get('title')   || FALLBACK.title,
+      subtitle:   params.get('ep')      || FALLBACK.subtitle,
+      crawlTitle: params.get('heading') || FALLBACK.crawlTitle,
+      crawlBody:  params.get('body')    || FALLBACK.crawlBody,
+    };
+    saveContent(content);
+    history.replaceState(null, '', window.location.pathname);
+    return content;
+  }
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) { try { return JSON.parse(stored); } catch(e) {} }
   try { const r = await fetch('content.json'); return await r.json(); } catch(e) {}
@@ -64,7 +79,6 @@ async function runIntro(content) {
   const logo      = document.getElementById('logo');
   const crawlStage= document.getElementById('crawl-stage');
   const crawlPlane= document.getElementById('crawl-plane');
-  const theEnd    = document.getElementById('the-end');
 
   // Populate content
   preTitleP.textContent   = content.preTitle  || '';
@@ -111,20 +125,9 @@ async function runIntro(content) {
   void crawlPlane.offsetWidth;
   crawlPlane.classList.add('rolling');
 
-  // PHASE 7 – wait for the CSS animation to actually finish, then show "the end"
+  // PHASE 7 – reload when the crawl animation completes
   await new Promise(resolve => crawlPlane.addEventListener('animationend', resolve, { once: true }));
-  await delay(2000);
-  theEnd.classList.add('visible');
-  await delay(5000);
-  theEnd.classList.remove('visible');
-  scene.classList.remove('active');
-  // Reset animation classes so the intro can be replayed cleanly
-  logoWrap.classList.remove('pop', 'shrink');
-  preTitle.classList.remove('fade-in', 'fade-out');
-  crawlStage.classList.remove('visible');
-  crawlPlane.classList.remove('rolling');
-  document.body.classList.remove('playing');
-  prompt.classList.remove('hidden');
+  location.reload();
 }
 
 // ── Editor ────────────────────────────────────────────────────────
@@ -155,6 +158,27 @@ editorForm.addEventListener('submit', e => {
     crawlBody:  editorForm.elements.crawlBody.value,
   });
   editor.classList.add('hidden');
+});
+
+// ── Share ─────────────────────────────────────────────────────────
+const BASE_URL = window.location.origin + window.location.pathname;
+
+document.getElementById('btn-share').addEventListener('click', async () => {
+  const content = await loadContent();
+  const params = new URLSearchParams();
+  if (content.preTitle)   params.set('pre',     content.preTitle);
+  if (content.title)      params.set('title',   content.title);
+  if (content.subtitle)   params.set('ep',      content.subtitle);
+  if (content.crawlTitle) params.set('heading', content.crawlTitle);
+  if (content.crawlBody)  params.set('body',    content.crawlBody);
+
+  const url = `${BASE_URL}?${params.toString()}`;
+  await navigator.clipboard.writeText(url);
+
+  const btn = document.getElementById('btn-share');
+  const original = btn.textContent;
+  btn.textContent = '✓ Copied!';
+  setTimeout(() => { btn.textContent = original; }, 2000);
 });
 
 // ── Entry point ───────────────────────────────────────────────────
